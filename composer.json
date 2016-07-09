@@ -1,0 +1,19 @@
+{
+    "name": "diogoko/bdd-proxy",
+    "authors": [
+        {
+            "name": "Diogo Kollross",
+            "email": "diogoko@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "5.4.*"
+    },
+    "autoload": {
+      "psr-4": {
+        "diogoko\\bdd\\": "src/",
+        "diogoko\\bdd\\tests\\": "tests/"
+      }
+    }
+}
