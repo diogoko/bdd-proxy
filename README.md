@@ -4,6 +4,10 @@ Proxy for calling methods using BDD style.
 
 ## Usage
 
+### Option 1
+
+One of the options is to use the proxy explicitly and target the caller itself:
+
 ```php
 class MyTestCase extends \PHPUnit\Framework\TestCase {
   function setUp() {
@@ -45,4 +49,40 @@ class MyTestCase extends \PHPUnit\Framework\TestCase {
     $this->assertEquals($result, $this->result);
   }
 }
+```
+
+### Option 2
+
+Another option is to call the proxy implicitly:
+
+```php
+class MyTestCase extends \PHPUnit\Framework\TestCase {
+  ...
+
+  function __call($name, $arguments) {
+    $this->bdd->delegateCall($name, $arguments);
+  }
+
+  function testSum() {
+    $this->given('that a is number', 3)
+        ->and('that b is number', 5)
+        ->when('adding a and b')
+        ->then('the result is', 8);
+  }
+  
+  ...
+```
+
+### Option 3
+
+You can also target a different object:
+
+```php
+class MyTestCase extends \PHPUnit\Framework\TestCase {
+  function setUp() {
+    $definitions = new MyStepDefinitions();
+    $this->bdd = new \diogoko\bdd\BDDProxy($definitions, 'given|when|then', 'and');
+  }
+
+  ...
 ```
