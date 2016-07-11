@@ -60,7 +60,7 @@ class MyTestCase extends \PHPUnit\Framework\TestCase {
   ...
 
   function __call($name, $arguments) {
-    $this->bdd->delegateCall($name, $arguments);
+    return $this->bdd->delegateCall($name, $arguments);
   }
 
   function testSum() {
