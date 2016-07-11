@@ -1,5 +1,6 @@
 {
     "name": "diogoko/bdd-proxy",
+    "license": "MIT",
     "authors": [
         {
             "name": "Diogo Kollross",
