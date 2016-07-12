@@ -106,4 +106,32 @@ class BDDProxyTest extends \PHPUnit\Framework\TestCase {
     $t = new TwoMethodsSameKindSameDescription();
     new BDDProxy($t, 'given|when|then', 'and');
   }
+  
+  function testNameBinding() {
+    $t = new NameBinding();
+    $p = new BDDProxy($t, 'given|when|then', 'and');
+    
+    $p->given('my description 1');
+    
+    $this->assertEquals([['method1']], $t->calls);
+  }
+  
+  function testOneMethodMultipleEqualBindings() {
+    $t = new OneMethodMultipleEqualBindings();
+    $p = new BDDProxy($t, 'given|when|then', 'and');
+    
+    $p->given('my description 1');
+    
+    $this->assertEquals([['method1']], $t->calls);
+  }
+  
+  function testBindingAndCallNormalization() {
+    $t = new BindingAndCallNormalization();
+    $p = new BDDProxy($t, 'dado|quando|entao', 'e');
+    
+    $p->entao(' minha  descrição 1 ')
+            ->e('minha descricao 2');
+    
+    $this->assertEquals([['method1'], ['method2']], $t->calls);
+  }
 }
