@@ -19,7 +19,7 @@ class BDDProxy {
    * 
    * @var array
    */
-  public $stepMap;
+  private $stepMap;
   
   /**
    * The name of the current step kind, if any.
