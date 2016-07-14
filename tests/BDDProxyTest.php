@@ -134,4 +134,21 @@ class BDDProxyTest extends \PHPUnit\Framework\TestCase {
     
     $this->assertEquals([['method1'], ['method2']], $t->calls);
   }
+  
+  function testExceptionFilter() {
+    $t = new ExceptionFilter();
+    $p = new BDDProxy($t, 'dado|quando|entao', 'e');
+    $p->setExceptionFilter(function($exception, $kind, $description, $arguments) {
+      return new \Exception("custom message: $kind $description", count($arguments), $exception);
+    });
+    
+    try {
+      $p->entao('minha descrição 1', 10, 20);
+      $this->fail('Should have thrown exception');
+    } catch (\Exception $e) {
+      $this->assertEquals('custom message: entao minha descrição 1', $e->getMessage());
+      $this->assertEquals(2, $e->getCode());
+      $this->assertEquals('original message', $e->getPrevious()->getMessage());
+    }
+  }
 }

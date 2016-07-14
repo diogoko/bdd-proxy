@@ -43,6 +43,13 @@ class BDDProxy {
   private $continuationPattern;
   
   /**
+   * The callback that processes exceptions thrown by the called methods.
+   * 
+   * @var callback
+   */
+  private $exceptionFilter;
+  
+  /**
    * Configures a new proxy.
    * 
    * @param object $target The proxied object
@@ -81,6 +88,24 @@ class BDDProxy {
   }
   
   /**
+   * Gets the callback that processes exceptions thrown by the called methods.
+   * 
+   * @return callback The current filter
+   */
+  public function getExceptionFilter() {
+    return $this->exceptionFilter;
+  }
+  
+  /**
+   * Sets the callback that processes exceptions thrown by the called methods.
+   * 
+   * @param callback $value The new filter
+   */
+  public function setExceptionFilter($value) {
+    $this->exceptionFilter = $value;
+  }
+  
+  /**
    * Calls the method corresponding to a given step kind and description.
    * 
    * @param string $kind The step kind
@@ -92,7 +117,7 @@ class BDDProxy {
    *                                 kind and description
    */
   private function invokeStep($kind, $description, $arguments) {
-    $description = $this->normalizeKey($description);
+    $normalizedDescription = $this->normalizeKey($description);
     
     $isContinuation = preg_match('/^' . $this->continuationPattern . '$/', $kind);
     if ($isContinuation) {
@@ -104,14 +129,25 @@ class BDDProxy {
       $this->currentStepKind = $kind;
     }
     
-    if (isset($this->stepMap[$this->currentStepKind][$description])) {
-      $method = $this->stepMap[$this->currentStepKind][$description];
-      $method->invokeArgs($this->target, $arguments);
+    if (isset($this->stepMap[$this->currentStepKind][$normalizedDescription])) {
+      $method = $this->stepMap[$this->currentStepKind][$normalizedDescription];
+      
+      try {
+        $method->invokeArgs($this->target, $arguments);
+      } catch (\Exception $exception) {
+        if ($this->exceptionFilter !== null) {
+          $exception = call_user_func($this->exceptionFilter, $exception,
+              $kind, $description, $arguments);
+        }
+        
+        throw $exception;
+      }
+      
       return $this;
     } else {
       $className = get_class($this->target);
       throw new \BadMethodCallException("Class {$className} does not have any "
-          . "method annotated with: @{$this->currentStepKind} {$description}");
+          . "method annotated with: @{$this->currentStepKind} {$normalizedDescription}");
     }
   }
   
