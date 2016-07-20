@@ -151,4 +151,13 @@ class BDDProxyTest extends \PHPUnit\Framework\TestCase {
       $this->assertEquals('original message', $e->getPrevious()->getMessage());
     }
   }
+  
+  function testMethodCallWithUnderscores() {
+    $t = new MethodCallWithUnderscores();
+    $p = new BDDProxy($t, 'given|when|then', 'and');
+    
+    $p->given('my DESCRIPTION_1');
+    
+    $this->assertEquals([['method1']], $t->calls);
+  }
 }
