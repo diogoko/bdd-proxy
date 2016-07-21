@@ -293,7 +293,7 @@ class BDDProxy {
       chr(195) . chr(145) => 'N',
       chr(195) . chr(177) => 'n',
     ]);
-    $s = preg_replace('/[^A-Za-z0-9_]/', ' ', $s);
+    $s = preg_replace('/[^A-Za-z0-9]/', ' ', $s);
     $s = trim($s);
     $s = preg_replace('/\s+/', ' ', $s);
     $s = strtolower($s);
