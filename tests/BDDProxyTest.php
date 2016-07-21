@@ -8,7 +8,7 @@ use diogoko\bdd\BDDProxy;
 class BDDProxyTest extends \PHPUnit\Framework\TestCase {
   /**
    * @expectedException \BadMethodCallException
-   * @expectedExceptionMessage Class diogoko\bdd\tests\OneMethodTwoKindsOneDescription does not have any method annotated with: @given undefined description
+   * @expectedExceptionMessage Class diogoko\bdd\tests\OneMethodTwoKindsOneDescription should have a method annotated with "@given undefined description" or named "given_undefined_description"
    */
   function testMethodNotFound() {
     $t = new OneMethodTwoKindsOneDescription();
