@@ -146,8 +146,10 @@ class BDDProxy {
       return $this;
     } else {
       $className = get_class($this->target);
-      throw new \BadMethodCallException("Class {$className} does not have any "
-          . "method annotated with: @{$this->currentStepKind} {$normalizedDescription}");
+      $suggestedMethodName = $this->currentStepKind . '_' . strtr($normalizedDescription, ' ', '_');
+      throw new \BadMethodCallException("Class {$className} should have a "
+          . "method annotated with \"@{$this->currentStepKind} {$normalizedDescription}\" "
+          . "or named \"{$suggestedMethodName}\"");
     }
   }
   
